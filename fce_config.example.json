@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "name": "Proctor",
+  "backend_url": "http://localhost:8000",
+  "frontend_url": "http://localhost:5173",
+  "exam_code": "DEMO",
+  "_comment": "Copy to config.json or fce_config.json in this (proctor) root. FCE Exam Trainer will call backend_url/api/session/join and redirect candidates to frontend_url/entry. Create the exam in proctor backend (see README Seed data) with this exam_code."
+}

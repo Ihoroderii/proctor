@@ -1,0 +1,5 @@
+# Proctor agent: joins LiveKit room, runs face detection, posts events to backend
+livekit>=1.1.0
+opencv-python-headless>=4.10.0
+aiohttp>=3.9.0
+numpy>=1.26.0
