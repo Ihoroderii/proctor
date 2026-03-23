@@ -1,7 +1,7 @@
 /**
  * Entry point for deep links from external apps (e.g. FCE Exam Trainer).
- * Expects at least session_id; optional room_name (livekit_room_name). No LiveKit token/URL.
- * Stores join data and redirects to /exam/:sessionId (WebRTC + WebSocket).
+ * Expects at least session_id; optional room_name.
+ * Stores join data and redirects to /exam/:sessionId.
  */
 import { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
@@ -13,7 +13,7 @@ export function Entry() {
 
   useEffect(() => {
     const sessionId = searchParams.get('session_id')
-    const roomName = searchParams.get('livekit_room_name') ?? searchParams.get('room_name')
+    const roomName = searchParams.get('room_name')
 
     if (!sessionId) {
       setError('Missing session_id. Use Join or the link from your exam app.')
@@ -22,9 +22,7 @@ export function Entry() {
 
     const joinData = {
       session_id: Number(sessionId),
-      livekit_room_name: roomName ?? `proctor-session-${sessionId}`,
-      token: null as string | null,
-      livekit_url: null as string | null,
+      room_name: roomName ?? `proctor-session-${sessionId}`,
     }
     sessionStorage.setItem('proctor_join', JSON.stringify(joinData))
     navigate(`/exam/${sessionId}`, { replace: true })

@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title=settings.app_name,
-    description="Real-time proctoring: WebRTC media (no LiveKit), events, flags, recording, reporting.",
+    description="Real-time proctoring: browser-based face/voice/phone detection, WebRTC media, events, flags, reporting.",
     lifespan=lifespan,
 )
 app.add_middleware(

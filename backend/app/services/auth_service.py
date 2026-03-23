@@ -1,4 +1,4 @@
-"""Auth: session creation, LiveKit tokens, proctor JWT."""
+"""Auth: session creation, proctor JWT."""
 import secrets
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
@@ -14,7 +14,7 @@ settings = get_settings()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-def _livekit_room_name(session_id: int) -> str:
+def _room_name(session_id: int) -> str:
     return f"proctor-session-{session_id}"
 
 
@@ -23,12 +23,12 @@ async def create_exam_session(db: AsyncSession, exam_id: int, candidate_identifi
     session = ExamSession(
         exam_id=exam_id,
         candidate_identifier=candidate_identifier,
-        livekit_room_name="",  # set after insert
+        room_name="",  # set after insert
         status=SessionStatus.created,
     )
     db.add(session)
     await db.flush()
-    session.livekit_room_name = _livekit_room_name(session.id)
+    session.room_name = _room_name(session.id)
     await db.refresh(session)
     return session
 
@@ -39,18 +39,13 @@ async def get_session_by_id(db: AsyncSession, session_id: int) -> ExamSession | 
 
 
 async def get_session_by_room(db: AsyncSession, room_name: str) -> ExamSession | None:
-    result = await db.execute(select(ExamSession).where(ExamSession.livekit_room_name == room_name))
+    result = await db.execute(select(ExamSession).where(ExamSession.room_name == room_name))
     return result.scalar_one_or_none()
 
 
 async def get_exam_by_code(db: AsyncSession, code: str) -> Exam | None:
     result = await db.execute(select(Exam).where(Exam.code == code))
     return result.scalar_one_or_none()
-
-
-def create_livekit_token(room_name: str, participant_identity: str, *, is_proctor: bool = False) -> str:
-    """No-op: we use WebRTC + our own signaling instead of LiveKit. Returns empty string."""
-    return ""
 
 
 def verify_proctor_token(token: str) -> dict | None:

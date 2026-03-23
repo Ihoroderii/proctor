@@ -2,10 +2,7 @@ const API = '/api'
 
 export type JoinResponse = {
   session_id: number
-  livekit_room_name: string
-  /** When null/empty, use WebRTC + WebSocket signaling instead of LiveKit */
-  token?: string | null
-  livekit_url?: string | null
+  room_name: string
 }
 
 export async function joinExam(examCode: string, candidateIdentifier: string): Promise<JoinResponse> {
@@ -41,21 +38,9 @@ export async function proctorLogin(email: string, password: string): Promise<Pro
   return res.json()
 }
 
-export type TokenResponse = { token: string; livekit_url: string }
-
-export async function getProctorToken(sessionId: number, identity: string): Promise<TokenResponse> {
-  const res = await fetch(`${API}/token/proctor`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ session_id: sessionId, participant_identity: identity }),
-  })
-  if (!res.ok) throw new Error('Failed to get proctor token')
-  return res.json()
-}
-
 export type SessionSummary = {
   id: number
-  livekit_room_name: string
+  room_name: string
   exam_id: number
   exam_title: string | null
   exam_code: string | null

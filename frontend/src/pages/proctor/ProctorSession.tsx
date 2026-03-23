@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { getSession, getProctorToken, wsSessionPath } from '@/api'
+import { getSession, wsSessionPath } from '@/api'
 
 const WS_URL = (location.protocol === 'https:' ? 'wss:' : 'ws:') + '//' + location.host
 

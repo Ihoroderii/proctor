@@ -20,7 +20,7 @@ class ExamSession(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     exam_id: Mapped[int] = mapped_column(ForeignKey("exams.id"), nullable=False)
     candidate_identifier: Mapped[str] = mapped_column(String(256), nullable=True)  # name or ID
-    livekit_room_name: Mapped[str] = mapped_column(String(128), unique=True, index=True, nullable=False)
+    room_name: Mapped[str] = mapped_column(String(128), unique=True, index=True, nullable=False)
     status: Mapped[SessionStatus] = mapped_column(
         SQLEnum(SessionStatus), default=SessionStatus.created, nullable=False
     )

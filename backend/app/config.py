@@ -11,11 +11,6 @@ class Settings(BaseSettings):
     # Database
     database_url: str = "postgresql+asyncpg://proctor:proctor@localhost:5432/proctor"
 
-    # LiveKit
-    livekit_url: str = "wss://your-livekit-server.livekit.cloud"
-    livekit_api_key: str = ""
-    livekit_api_secret: str = ""
-
     # JWT for our API (proctor login, etc.)
     jwt_secret: str = "change-me-in-production"
     jwt_algorithm: str = "HS256"
@@ -32,7 +27,8 @@ class Settings(BaseSettings):
     # Redis (optional, for pub/sub and rate limiting)
     redis_url: str | None = None
 
-    # Proctor agent (automated bot that joins room and runs face detection)
+    # Agent secret (browser-based detection posts events via WebSocket;
+    # this key is kept for any future HTTP agent integration)
     agent_secret: str = ""
 
     class Config:

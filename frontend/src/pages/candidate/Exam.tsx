@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import type { JoinResponse } from '@/api'
+import { startProctoring, stopProctoring, type ProctoringEvent } from '@/lib/proctoring'
 
 const WS_URL = (location.protocol === 'https:' ? 'wss:' : 'ws:') + '//' + location.host
 
@@ -52,6 +53,12 @@ function useWebRTCAndEvents(sessionId: number, onReady: () => void) {
         const offer = await pc.createOffer()
         await pc.setLocalDescription(offer)
         sendSignaling({ type: 'webrtc_offer', sdp: offer })
+
+        // Start browser-based proctoring (face, phone, voice, lockdown)
+        startProctoring(stream, localVideoRef.current!, (ev: ProctoringEvent) => {
+          sendEvent(ev.event_type, ev.payload)
+        })
+
         onReadyRef.current()
       } catch (err) {
         console.error('getUserMedia or createOffer failed', err)
@@ -73,6 +80,7 @@ function useWebRTCAndEvents(sessionId: number, onReady: () => void) {
     }
 
     return () => {
+      stopProctoring()
       ws.close()
       wsRef.current = null
       pcRef.current?.close()
@@ -92,12 +100,7 @@ function ExamContent() {
   const [ready, setReady] = useState(false)
   const { sendEvent, localVideoRef } = useWebRTCAndEvents(sid, () => setReady(true))
 
-  useEffect(() => {
-    const handleVisibility = () =>
-      sendEvent('tab_visibility', { visible: document.visibilityState === 'visible' })
-    document.addEventListener('visibilitychange', handleVisibility)
-    return () => document.removeEventListener('visibilitychange', handleVisibility)
-  }, [sendEvent])
+  // Tab visibility is now handled by the proctoring module
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>

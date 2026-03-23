@@ -32,7 +32,7 @@ async def list_sessions(
         exam = (await db.execute(select(Exam).where(Exam.id == s.exam_id))).scalar_one_or_none()
         out.append({
             "id": s.id,
-            "livekit_room_name": s.livekit_room_name,
+            "room_name": s.room_name,
             "exam_id": s.exam_id,
             "exam_title": exam.title if exam else None,
             "exam_code": exam.code if exam else None,
@@ -57,7 +57,7 @@ async def get_session(
     exam = (await db.execute(select(Exam).where(Exam.id == session.exam_id))).scalar_one_or_none()
     return {
         "id": session.id,
-        "livekit_room_name": session.livekit_room_name,
+        "room_name": session.room_name,
         "exam_id": session.exam_id,
         "exam_title": exam.title if exam else None,
         "exam_code": exam.code if exam else None,
